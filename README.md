@@ -1,6 +1,8 @@
 (https://gitee.com/daidaibg/IofTV-Screen)**
 You can learn how to use the project from the above link.
 
+You can download the backend of the Vue project from server folder.
+
 install:
 
 npm install
