@@ -29,17 +29,17 @@
     <div class="contetn_center">
       <CenterMap class="contetn_center_top" />
       <!-- <ItemWrap class="contetn_center-bottom" title="24小时车辆情况">
-                                        <CenterBottom />
-                                      </ItemWrap> -->
+                                      <CenterBottom />
+                                    </ItemWrap> -->
     </div>
     <div class="contetn_right">
-      <ItemWrap class="contetn_left-bottom contetn_lr-item" title="各省本年GDP增速">
-        <RightTop @to3d="to3d" />
+      <ItemWrap class="contetn_left-bottom contetn_lr-item" title="近十年GDP增速">
+        <RightTop />
       </ItemWrap>
-      <ItemWrap class="contetn_left-bottom contetn_lr-item" title="中国近十年GDP增速" style="padding: 0 10px 16px 10px">
+      <ItemWrap class="contetn_left-bottom contetn_lr-item" title="近十年GDP增速" style="padding: 0 10px 16px 10px">
         <RightCenter ref="RightCenter" @openn="openn" />
       </ItemWrap>
-      <ItemWrap class="contetn_left-bottom contetn_lr-item" title="节点监控">
+      <ItemWrap class="contetn_left-bottom contetn_lr-item" title="实时报警">
         <RightBottom />
       </ItemWrap>
     </div>
@@ -47,12 +47,10 @@
 
 
     <el-dialog :visible.sync="menuRoleVisible" append-to-body>
-      <Menu-role v-if="menuRoleVisible" ref="menuRole"></Menu-role>
+      <menu-role v-if="menuRoleVisible" ref="menuRole"></menu-role>
     </el-dialog>
 
-    <el-dialog :visible.sync="menuRoleVisible2" append-to-body>
-      <Menu v-if="menuRoleVisible2" ref="menu"> </Menu>
-    </el-dialog>
+  
   </div>
 </template>
 
@@ -66,7 +64,6 @@ import RightTop from "./right-top.vue";
 import RightCenter from "./right-center.vue";
 import RightBottom from "./right-bottom.vue";
 import MenuRole from './right-center-big.vue';
-import Menu from './right-top-big.vue';
 
 export default {
   components: {
@@ -78,13 +75,11 @@ export default {
     RightCenter,
     RightBottom,
     CenterBottom,
-    MenuRole,
-    Menu
+    MenuRole
   },
   data() {
     return {
-      menuRoleVisible: false,
-      menuRoleVisible2: false
+      menuRoleVisible: false
     }
   },
   filters: {
@@ -100,16 +95,8 @@ export default {
     openn(data) {
       if (data == false) {
         this.menuRoleVisible = true
-
-      }
-    },
-
-    to3d(data) {
-      if (data == false) {
-        this.menuRoleVisible2 = true
       }
     }
-
   },
 };
 
@@ -118,18 +105,9 @@ export default {
 // 内容
 .contents {
 
-  .contetn_left {
-    width: 540px;
-    padding: 0px;
-    box-sizing: border-box;
-    // padding: 16px 0;
-
-  }
-
-  
+  .contetn_left,
   .contetn_right {
     width: 540px;
-    padding: 0px;
     box-sizing: border-box;
     // padding: 16px 0;
   }
@@ -140,9 +118,7 @@ export default {
 
   //左右两侧 三个块
   .contetn_lr-item {
-    border: 0px;
     height: 310px;
-    padding: 0px;
   }
 
   .contetn_center_top {
@@ -163,7 +139,6 @@ export default {
   //左边 右边 结构一样
   .contetn_left,
   .contetn_right {
-    padding: 0px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -177,14 +152,14 @@ export default {
 }
 
 ::v-deep .el-dialog__wrapper {
-
+  
   color: transparent;
   border: 0;
   height: 10px;
 }
 
 ::v-deep .el-dialog {
-
+  
   background-color: transparent;
   border: 0;
   height: 10px;

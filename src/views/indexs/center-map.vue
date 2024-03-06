@@ -38,7 +38,7 @@ export default {
   beforeMount() {
     this.$http.get('/center_map')
       .then((response) => {
-        this.lists = response.data.list
+        this.lists = response.data
         this.getGeojson(this.code, this.lists)
       })
       .catch((error) => { console.log(error); this.getGeojson(this.code, this.lists) });
@@ -94,11 +94,11 @@ export default {
           // console.log('rrrrrrrrr',response.data[0].value)
           // console.log(this.lists)
           // console.log('rrrrrrrr',this.lists[0].value)
-          if (this.lists[0].value == response.data.list[0].value) {
+          if (this.lists[0].value == response.data[0].value) {
             console.log
           }
           else {
-            this.lists = response.data.list
+            this.lists = response.data
             this.getGeojson(this.code, this.lists)
           }
           this.switper()

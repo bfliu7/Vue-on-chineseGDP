@@ -1,555 +1,139 @@
-<!-- 
- * @Author: daidai
- * @Date: 2022-03-01 14:13:04
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-27 15:04:49
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\right-top.vue
--->
-<template>
-  <div style="height: 100%">
-    <div style="height: 80%">
-      <Echart id="charts" :options="option" class="right_top_inner" v-if="pageflag" ref="charts">
-      </Echart>
-    </div>
-
-    <div style="height: 20%; margin: 10px">
-      <a style="display: inline">
-        <el-input style="display: inline" placeholder="Input" v-model="input" clearable></el-input>
-      </a>
-      <a style="display: inline; width: 50px">
-        <el-button icon="el-icon-search" class="el-button__inner" @click="chaxun"></el-button>
-      </a>
-    </div>
-  </div>
+<!-- <template>
+  <Echart
+    id="rightTop"
+    :options="option"
+    class="right_top_inner"
+    v-if="pageflag"
+    ref="charts"
+  />
+  <Reacquire v-else @onclick="getData" style="line-height: 200px">
+    重新获取
+  </Reacquire>
 </template>
 
 <script>
+
+let lists = [[0, 0, 5], [0, 1, 1], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0], [0, 8, 0], [0, 9, 0], [0, 10, 0], [0, 11, 2], [0, 12, 4], [0, 13, 1], [0, 14, 1], [0, 15, 3], [0, 16, 4], [0, 17, 6], [0, 18, 4], [0, 19, 4], [0, 20, 3], [0, 21, 3], [0, 22, 2], [0, 23, 5], [1, 0, 7], [1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 4, 0], [1, 5, 0], [1, 6, 0], [1, 7, 0], [1, 8, 0], [1, 9, 0], [1, 10, 5], [1, 11, 2], [1, 12, 2], [1, 13, 6], [1, 14, 9], [1, 15, 11], [1, 16, 6], [1, 17, 7], [1, 18, 8], [1, 19, 12], [1, 20, 5], [1, 21, 5], [1, 22, 7], [1, 23, 2], [2, 0, 1], [2, 1, 1], [2, 2, 0], [2, 3, 0], [2, 4, 0], [2, 5, 0], [2, 6, 0], [2, 7, 0], [2, 8, 0], [2, 9, 0], [2, 10, 3], [2, 11, 2], [2, 12, 1], [2, 13, 9], [2, 14, 8], [2, 15, 10], [2, 16, 6], [2, 17, 5], [2, 18, 5], [2, 19, 5], [2, 20, 7], [2, 21, 4], [2, 22, 2], [2, 23, 4], [3, 0, 7], [3, 1, 3], [3, 2, 0], [3, 3, 0], [3, 4, 0], [3, 5, 0], [3, 6, 0], [3, 7, 0], [3, 8, 1], [3, 9, 0], [3, 10, 5], [3, 11, 4], [3, 12, 7], [3, 13, 14], [3, 14, 13], [3, 15, 12], [3, 16, 9], [3, 17, 5], [3, 18, 5], [3, 19, 10], [3, 20, 6], [3, 21, 4], [3, 22, 4], [3, 23, 1], [4, 0, 1], [4, 1, 3], [4, 2, 0], [4, 3, 0], [4, 4, 0], [4, 5, 1], [4, 6, 0], [4, 7, 0], [4, 8, 0], [4, 9, 2], [4, 10, 4], [4, 11, 4], [4, 12, 2], [4, 13, 4], [4, 14, 4], [4, 15, 14], [4, 16, 12], [4, 17, 1], [4, 18, 8], [4, 19, 5], [4, 20, 3], [4, 21, 7], [4, 22, 3], [4, 23, 0], [5, 0, 2], [5, 1, 1], [5, 2, 0], [5, 3, 3], [5, 4, 0], [5, 5, 0], [5, 6, 0], [5, 7, 0], [5, 8, 2], [5, 9, 0], [5, 10, 4], [5, 11, 1], [5, 12, 5], [5, 13, 10], [5, 14, 5], [5, 15, 7], [5, 16, 11], [5, 17, 6], [5, 18, 0], [5, 19, 5], [5, 20, 3], [5, 21, 4], [5, 22, 2], [5, 23, 0], [6, 0, 1], [6, 1, 0], [6, 2, 0], [6, 3, 0], [6, 4, 0], [6, 5, 0], [6, 6, 0], [6, 7, 0], [6, 8, 0], [6, 9, 0], [6, 10, 1], [6, 11, 0], [6, 12, 2], [6, 13, 1], [6, 14, 3], [6, 15, 4], [6, 16, 0], [6, 17, 0], [6, 18, 0], [6, 19, 0], [6, 20, 1], [6, 21, 2], [6, 22, 2], [6, 23, 6]];
 import { currentGET } from "api/modules";
-import { graphic } from "echarts";
 import * as echarts from "echarts";
+import "echarts-gl";
+
 export default {
   data() {
     return {
-      input: "",
-      want: 10,
-      lists: {
-        dateList: [
-          "1952",
-          "1953",
-          "1954",
-          "1955",
-          "1956",
-          "1957",
-          "1958",
-          "1959",
-          "1960",
-          "1961",
-        ],
-        numList: [
-          2.45, 1.88, 1.69, 7.92, 4.66, 3.07, 0.44, -15.86, -16.38, 1.45,
-        ],
-        numList2: [
-          36.12, 35.82, 15.66, 7.58, 34.47, 8.04, 52.9, 25.79, 5.58, -42.07,
-        ],
-        numList3: [
-          19.26, 24.85, -0.39, 4.83, 13.29, 4.67, 18.09, 15.57, 4.98, -25.84,
-        ],
-        numList4: [
-          14.79, 15.62, 4.21, 6.85, 15.02, 5.06, 21.25, 8.82, -0.32, -27.32,
-        ],
-      },
       option: {},
       pageflag: false,
-      isFullScreen: false,
+      timer: null,
+      symbolSize: 2.5,
     };
   },
-
-  beforeMount() {
-    this.init(
-      this.lists.dateList,
-      this.lists.numList,
-      this.lists.numList2,
-      this.lists.numList3,
-      this.lists.numList4
-    );
-  },
+  created() {},
 
   mounted() {
-    this.get_data();
-    // this.$nextTick(() => {
-    //   let myChart = this.$refs.charts;
-    //   console.log(myChart)
-    //   // myChart.on('click', (params) => {
-    //   //   console.log(1111111)
-
-    //   // });
-
-    // })
+    this.getData();
   },
-
   beforeDestroy() {
     this.clearData();
   },
-
   methods: {
-    chaxun() {
-      if (+this.input > 9 && +this.input < 70) {
-        this.want = parseInt(this.input, 10);
-        this.$http
-          .post("/right_center_big_post", { want: this.want - 1 })
-          .then((res) => {
-            if (res.data.success) {
-              console.log;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            alert("connect to net");
-          });
-
-        // this.display = parseInt(this.input, 10)
-
-        // location.reload()  不适合此处
-      } else {
-        alert("wrong, please input 10 -> 69 ");
-      }
-    },
-    get_data() {
+    fn() {
       //记得调用fn
-      this.pageflag = true;
       this.$http
-        .get("/right_center_big")
-        .then((response) => {
-          if (
-            this.lists.dateList.length == response.data.dateList.length &&
-            this.lists.dateList[0] == response.data.dateList[0]
-          ) {
-            console.log;
-          } else {
-            this.lists = response.data;
-            this.init(
-              this.lists.dateList,
-              this.lists.numList,
-              this.lists.numList2,
-              this.lists.numList3,
-              this.lists.numList4
-            );
-          }
-          this.switper();
+        .get("/D_bottom")
+        .then(function (response) {
+          lists = response.data;
+          // console.log(11111111111,response.data)
         })
-        .catch((error) => {
+        .catch(function (error) {
           console.log(error);
         });
     },
+    clearData() {
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+    },
+    getData() {
+      // this.fn()
+      this.pageflag = true;
+      // this.pageflag =false
+      currentGET("big9").then((res) => {
+        if (!this.timer) {
+          // alert(1)
+          console.log("center-bottom", res);
+        }
+        if (res.success) {
+          // console.log(lists)
+          let x, j;
+          let xdata = [];
+          for (x in lists) {
+            xdata.push({ value: [lists[x][1], lists[x][0], lists[x][2]] });
+
+            // console.log(res.data[x])
+          }
+
+          // console.log('------++++++-----',xdata)
+          this.$nextTick(() => {
+            this.init(xdata), this.switper();
+          });
+        } else {
+          this.pageflag = false;
+          this.$Message({
+            text: res.msg,
+            type: "warning",
+          });
+        }
+      });
+    },
+    //轮询
     switper() {
       if (this.timer) {
         return;
       }
       let looper = (a) => {
-        // console.log(11111111111,lists)
-        this.get_data();
+        this.getData();
       };
-      this.timer = setInterval(looper, 1000); //1秒刷新一次
+      this.timer = setInterval(looper, 20000);
     },
-
-    clearData() {
-      if (this.timer) {
-        clearInterval(this.timer);
-      }
-    },
-
-    // handleFull() {
-    //   console.log(111111111)
-    // },
-
-    init(xData, yData, yData2, yData3, yData4) {
+    init(xdata) {
       this.option = {
-        legend: {
-          data: [
-            {
-              name: "第一产业",
-              textStyle: {
-                color: "rgba(252,144,16,.7)", // 图例文字颜色
-              },
-            },
-            {
-              name: "第二产业",
-              textStyle: {
-                color: "rgba(9,202,243,.7)", // 图例文字颜色
-              },
-            },
-            {
-              name: "第三产业",
-              textStyle: {
-                color: "rgba(249,100,111,.7)", // 图例文字颜色
-              },
-            },
-            {
-              name: "总指数",
-              textStyle: {
-                color: "rgba(252,255,255,1)", // 图例文字颜色
-              },
-            },
-          ],
-        },
-        xAxis: {
-          name: "年",
+        grid3D: {},
+        xAxis3D: {
           type: "category",
-          data: xData,
-          boundaryGap: false, // 不留白，从原点开始
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: "rgba(31,99,163,.2)",
-            },
-          },
-          axisLine: {
-            // show:false,
-            lineStyle: {
-              color: "rgba(31,99,163,.1)",
-            },
-          },
-          axisLabel: {
-            color: "#7EB7FD",
-            fontWeight: "500",
-            // formatter:'year'
-          },
         },
-        yAxis: {
-          name: "%",
-          show: true,
-          type: "value",
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: "rgba(31,99,163,.2)",
-            },
-          },
-          axisLine: {
-            lineStyle: {
-              color: "rgba(31,99,163,.1)",
-            },
-          },
-          axisLabel: {
-            color: "#7EB7FD",
-            fontWeight: "500",
-            formatter: "{value}%",
-          },
+        yAxis3D: {
+          max: 2020,
+          min: 1952,
         },
+        zAxis3D: {},
         tooltip: {
-          trigger: "axis",
-          backgroundColor: "rgba(0,0,0,.6)",
-          borderColor: "rgba(147, 235, 248, .8)",
-          textStyle: {
-            color: "#FFF",
-            fontSize: 15,
-          },
           formatter: function (params) {
-            var str =
-              '<div style="color: white"><p>年代：' +
-              params[0].name.split("[")[0] +
-              "<p><div>";
-            for (var i = 0; i < params.length; i++) {
-              str +=
-                params[i].marker +
-                " " +
-                params[i].seriesName +
-                " ：" +
-                params[i].value +
-                "%<br>";
-            }
-            return str;
+            var seriesName = params.seriesName;
+            var dataValue = params.value;
+            var content = seriesName + "<br/>" + ": " + dataValue;
+            return content;
           },
         },
-
-        grid: {
-          //布局
-          show: true,
-          left: "20px",
-          right: "20px",
-          bottom: "5px",
-          top: "22px",
-          containLabel: true,
-          borderColor: "#1F63A3",
+        dataset: {
+          dimensions: [
+            "Income",
+            "Life Expectancy",
+            "Population",
+            "Country",
+            { name: "Year", type: "ordinal" },
+          ],
+          source: data,
         },
         series: [
           {
-            data: yData,
-            type: "line",
-            smooth: true,
-            symbol: "none", //去除点
-            name: "第一产业",
-            color: "rgba(252,144,16,.7)",
-            areaStyle: {
-              //右，下，左，上
-              color: new graphic.LinearGradient(
-                0,
-                0,
-                0,
-                1,
-                [
-                  {
-                    offset: 0,
-                    color: "rgba(252,144,16,.7)",
-                  },
-                  {
-                    offset: 0.4,
-                    color: "rgba(252,144,16,.0)",
-                  },
-                ],
-                false
-              ),
-            },
-            // markPoint: {
-            //   data: [
-            //     {
-            //       name: "最大值",
-
-            //       type: "max",
-            //       valueDim: "y",
-            //       symbol: "rect",
-            //       symbolSize: [60, 26],
-            //       symbolOffset: [0, -20],
-            //       itemStyle: {
-            //         color: "rgba(0,0,0,0)",
-            //       },
-            //       label: {
-            //         color: "#FC9010",
-            //         backgroundColor: "rgba(252,144,16,0.1)",
-            //         borderRadius: 6,
-            //         padding: [7, 14],
-            //         borderWidth: 0.5,
-            //         borderColor: "rgba(252,144,16,.5)",
-            //         formatter: "罗田主线站：{c}",
-            //       },
-            //     },
-            //     {
-            //       name: "最大值",
-            //       type: "max",
-            //       valueDim: "y",
-            //       symbol: "circle",
-            //       symbolSize: 6,
-            //       itemStyle: {
-            //         color: "#FC9010",
-            //         shadowColor: "#FC9010",
-            //         shadowBlur: 8,
-            //       },
-            //       label: {
-            //         formatter: "",
-            //       },
-            //     },
-            //   ],
-            // },
-          },
-          {
-            data: yData2,
-            type: "line",
-            smooth: true,
-            symbol: "none", //去除点
-            name: "第二产业",
-            color: "rgba(9,202,243,.7)",
-            areaStyle: {
-              //右，下，左，上
-              color: new graphic.LinearGradient(
-                0,
-                0,
-                0,
-                1,
-                [
-                  {
-                    offset: 0,
-                    color: "rgba(9,202,243,.7)",
-                  },
-                  {
-                    offset: 0.4,
-                    color: "rgba(9,202,243,.0)",
-                  },
-                ],
-                false
-              ),
-            },
-
-            // markPoint: {
-            //   data: [
-            //     {
-            //       name: "最大值",
-            //       type: "average",
-            //       valueDim: "y",
-            //       symbol: "rect",
-            //       symbolSize: [60, 26],
-            //       symbolOffset: [0, -20],
-            //       itemStyle: {
-            //         color: "rgba(0,0,0,0)",
-            //       },
-            //       label: {
-            //         color: "#09CAF3",
-            //         backgroundColor: "rgba(9,202,243,0.1)",
-
-            //         borderRadius: 6,
-            //         borderColor: "rgba(9,202,243,.5)",
-            //         padding: [7, 14],
-            //         formatter: "水朗D站：{c}",
-            //         borderWidth: 0.5,
-            //       },
-            //     },
-            //     {
-            //       name: "最大值",
-            //       type: "min",
-            //       valueDim: "y",
-            //       symbol: "circle",
-            //       symbolSize: 6,
-            //       itemStyle: {
-            //         color: "#09CAF3",
-            //         shadowColor: "#09CAF3",
-            //         shadowBlur: 8,
-            //       },
-            //       label: {
-            //         formatter: "",
-            //       },
-            //     },
-            //   ],
-            // },
-          },
-          {
-            data: yData3,
-            type: "line",
-            smooth: true,
-            symbol: "none", //去除点
-            name: "第三产业",
-            color: "rgba(249,100,111,.7)",
-            areaStyle: {
-              //右，下，左，上
-              color: new graphic.LinearGradient(
-                0,
-                0,
-                0,
-                1,
-                [
-                  {
-                    offset: 0,
-                    color: "rgba(249,100,111,.7)",
-                  },
-                  {
-                    offset: 0.4,
-                    color: "rgba(249,100,111,.0)",
-                  },
-                ],
-                false
-              ),
-            },
-            // markPoint: {
-            //   data: [
-            //     {
-            //       name: "最大值",
-            //       type: "max",
-            //       valueDim: "y",
-            //       symbol: "rect",
-            //       symbolSize: [60, 26],
-            //       symbolOffset: [0, -20],
-            //       itemStyle: {
-            //         color: "rgba(0,0,0,0)",
-            //       },
-            //       label: {
-            //         color: "rgba(249,100,111)",
-            //         backgroundColor: "rgba(249,100,111,0.1)",
-
-            //         borderRadius: 6,
-            //         borderColor: "rgba(249,100,111,.5)",
-            //         padding: [7, 14],
-            //         formatter: "松山湖南：{c}",
-            //         borderWidth: 0.5,
-            //       },
-            //     },
-            //     {
-            //       name: "最大值",
-            //       type: "max",
-            //       valueDim: "y",
-            //       symbol: "circle",
-            //       symbolSize: 6,
-            //       itemStyle: {
-            //         color: "rgba(249,100,111)",
-            //         shadowColor: "rgba(249,100,111)",
-            //         shadowBlur: 8,
-            //       },
-            //       label: {
-            //         formatter: "",
-            //       },
-            //     },
-            //   ],
-            // },
-          },
-          {
-            data: yData4,
-            type: "line",
-            smooth: true,
-            symbol: "none", //去除点
-            name: "总指数",
-            color: "rgba(252,255,255,1)",
-            areaStyle: {
-              //右，下，左，上
-              color: new graphic.LinearGradient(
-                0,
-                0,
-                0,
-                1,
-                [
-                  {
-                    offset: 0,
-                    color: "rgba(252,255,255,1)",
-                  },
-                  {
-                    offset: 0.5,
-                    color: "rgba(252,255,255,.0)",
-                  },
-                ],
-                false
-              ),
-            },
-
-            markPoint: {
-              data: [
-                {
-                  name: "最大值",
-                  type: "max",
-                  valueDim: "y",
-                  symbol: "rect",
-                  symbolSize: [60, 26],
-                  symbolOffset: [0, -20],
-                  itemStyle: {
-                    color: "rgba(0,0,0,0)",
-                  },
-                  label: {
-                    color: "rgba(252,255,255,4)",
-                    backgroundColor: "rgba(252,255,255,0.1)",
-                    borderRadius: 6,
-                    padding: [7, 14],
-                    borderWidth: 0.5,
-                    borderColor: "rgba(252,255,255,.5)",
-                    formatter: "最大增速：{per|{c}%}",
-                    rich: {
-                      per: {
-                        color: "white",
-                        fontSize: 18,
-                      },
-                    },
-                  },
-                },
-                {
-                  name: "最大值",
-                  type: "max",
-                  valueDim: "y",
-                  symbol: "circle",
-                  symbolSize: 10,
-                  itemStyle: {
-                    color: "rgba(252,255,255,1)",
-                    shadowColor: "rgba(252,255,255,.9)",
-                    shadowBlur: 8,
-                  },
-                  label: {
-                    formatter: "",
-                  },
-                },
-              ],
+            type: "scatter3D",
+            symbolSize: symbolSize,
+            encode: {
+              x: "Country",
+              y: "Year",
+              z: "Income",
+              tooltip: [0, 1, 2, 3, 4],
             },
           },
         ],
@@ -560,60 +144,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .right_top_inner {
-  height: 100%;
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
+  margin-top: -8px;
 }
-
-::v-deep .el-input__inner {
-  width: 100px;
-  text-align: center;
-  height: 50px;
-  border-radius: 20px;
-  background-color: transparent;
-  border: 2px solid #5dade2;
-  background: transparent;
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-left: 45%;
-  margin-top: 10px;
-  margin-right: 10px;
-  padding-left: 10px;
-  padding-top: 0px;
-}
-
-::v-deep .el-button__inner {
-  border-radius: 12px;
-  background-color: transparent;
-  border: 0px solid #5dade2;
-  background: transparent;
-
-  margin: 0px;
-  font-size: 22px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding: 0px;
-}
-
-::v-deep .el-button__inner:hover {
-  background-color: transparent;
-  border: 0px solid #5dade2;
-  background: transparent;
-  font-size: 24px;
-  color: rgba(255, 255, 255, 1);
-}
-
-::v-deep .el-button__inner:active {
-  background-color: transparent;
-  color: rgb(231, 231, 241);
-}
-
-::v-deep .el-button__inner:focus {
-  background-color: transparent;
-  color: rgb(255, 255, 255);
-}
-</style>
+</style> -->

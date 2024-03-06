@@ -1,4 +1,4 @@
-<!-- 
+<!--
  * @Author: daidai
  * @Date: 2022-03-01 14:13:04
  * @LastEditors: Please set LastEditors
@@ -6,14 +6,16 @@
  * @FilePath: \web-pc\src\pages\big-screen\view\indexs\right-top.vue
 -->
 <template>
-  <div style="height: 100%">
-    <div style="height: 80%">
-      <Echart id="charts" :options="option" class="right_top_inner" v-if="pageflag" ref="charts">
-      </Echart>
-    </div>
-
-    
-  </div>
+  <Echart
+    id="rightcenter"
+    :options="option"
+    class="right_top_inner"
+    v-if="pageflag"
+    ref="charts"
+  />
+  <Reacquire v-else @onclick="get_data" style="line-height: 200px">
+    重新获取
+  </Reacquire>
 </template>
 
 <script>
@@ -23,8 +25,6 @@ import * as echarts from "echarts";
 export default {
   data() {
     return {
-      input: "",
-      want: 10,
       lists: {
         dateList: [
           "1952",
@@ -69,15 +69,6 @@ export default {
 
   mounted() {
     this.get_data();
-    // this.$nextTick(() => {
-    //   let myChart = this.$refs.charts;
-    //   console.log(myChart)
-    //   // myChart.on('click', (params) => {
-    //   //   console.log(1111111)
-
-    //   // });
-
-    // })
   },
 
   beforeDestroy() {
@@ -85,33 +76,11 @@ export default {
   },
 
   methods: {
-    chaxun() {
-      if (+this.input > 9 && +this.input < 70) {
-        this.want = parseInt(this.input, 10);
-        this.$http
-          .post("/right_center_big_post", { want: this.want - 1 })
-          .then((res) => {
-            if (res.data.success) {
-              console.log;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            alert("connect to net");
-          });
-
-        // this.display = parseInt(this.input, 10)
-
-        // location.reload()  不适合此处
-      } else {
-        alert("wrong, please input 10 -> 69 ");
-      }
-    },
     get_data() {
       //记得调用fn
       this.pageflag = true;
       this.$http
-        .get("/right_center_big")
+        .get("/right_center")
         .then((response) => {
           if (
             this.lists.dateList.length == response.data.dateList.length &&
@@ -151,9 +120,10 @@ export default {
       }
     },
 
-    // handleFull() {
-    //   console.log(111111111)
-    // },
+    handleFull() {
+      // 全屏按钮点击事件
+      this.$emit("openn", this.isFullScreen);
+    },
 
     init(xData, yData, yData2, yData3, yData4) {
       this.option = {
@@ -254,7 +224,6 @@ export default {
             return str;
           },
         },
-
         grid: {
           //布局
           show: true,
@@ -361,7 +330,6 @@ export default {
                 false
               ),
             },
-
             // markPoint: {
             //   data: [
             //     {
@@ -498,11 +466,11 @@ export default {
                 false
               ),
             },
-
             markPoint: {
               data: [
                 {
                   name: "最大值",
+
                   type: "max",
                   valueDim: "y",
                   symbol: "rect",
@@ -532,9 +500,9 @@ export default {
                   type: "max",
                   valueDim: "y",
                   symbol: "circle",
-                  symbolSize: 10,
+                  symbolSize: 6,
                   itemStyle: {
-                    color: "rgba(252,255,255,1)",
+                    color: "rgba(252,255,255,.5)",
                     shadowColor: "rgba(252,255,255,.9)",
                     shadowBlur: 8,
                   },
@@ -546,6 +514,17 @@ export default {
             },
           },
         ],
+        toolbox: {
+          feature: {
+            myFull: {
+              // 自定义全屏按钮
+              show: true,
+              title: "全屏",
+              icon: "path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891", // 省略部分代码，可自行选择或设计图标
+              onclick: this.handleFull, // 全屏按钮点击事件
+            },
+          },
+        },
       };
     },
   },
@@ -553,60 +532,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .right_top_inner {
-  height: 100%;
-  width: 100%;
+  // height: 100px;
   margin: 0px;
   padding: 0px;
   border: 0px;
-}
-
-::v-deep .el-input__inner {
-  width: 100px;
-  text-align: center;
-  height: 50px;
-  border-radius: 20px;
-  background-color: transparent;
-  border: 2px solid #5dade2;
-  background: transparent;
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-left: 45%;
-  margin-top: 10px;
-  margin-right: 10px;
-  padding-left: 10px;
-  padding-top: 0px;
-}
-
-::v-deep .el-button__inner {
-  border-radius: 12px;
-  background-color: transparent;
-  border: 0px solid #5dade2;
-  background: transparent;
-
-  margin: 0px;
-  font-size: 22px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding: 0px;
-}
-
-::v-deep .el-button__inner:hover {
-  background-color: transparent;
-  border: 0px solid #5dade2;
-  background: transparent;
-  font-size: 24px;
-  color: rgba(255, 255, 255, 1);
-}
-
-::v-deep .el-button__inner:active {
-  background-color: transparent;
-  color: rgb(231, 231, 241);
-}
-
-::v-deep .el-button__inner:focus {
-  background-color: transparent;
-  color: rgb(255, 255, 255);
 }
 </style>

@@ -6,31 +6,34 @@
  * @FilePath: \web-pc\src\pages\big-screen\view\indexs\right-bottom.vue
 -->
 <template>
-  <Echart id="leftBottom" :options="option" class='right_bottom' v-if="pageflag" ref="charts" />
-  <Reacquire v-else @onclick="get_data" style="line-height: 200px">
-    重新获取
-  </Reacquire>
-  
-
+  <div class="right_bottom">
+    <dv-capsule-chart :config="config" style="width:100%;height:260px" />
+  </div>
 </template>
 
 <script>
-import * as echarts from "echarts";
 
 
 export default {
 
   data() {
     return {
-      lists:[["广东省","四川省","河南省","上海市","河北省","辽宁省","山东省","江苏省"],["14.39","21.18","22.46","2.17","25.23","12","28.55","25.49"],["6.7","4.55","8.23","19.22","7.61","20","7.87","8.53"],["8.43","5.96","5.4","15.27","7.65","9.38","6.99","14.39"]],
-      option: {},
-      pageflag: false,
-      
+      lists: [{ "name": "安徽省", "value": "22.88" }, { "name": "北京市", "value": "7.88" }, { "name": "福建省", "value": "12.73" }, { "name": "甘肃省", "value": "13.32" }, { "name": "广东省", "value": "29.52" }, { "name": "广西壮族自治区", "value": "12.81" }, { "name": "贵州省", "value": "8.55" }, { "name": "河北省", "value": "40.49" }, { "name": "河南省", "value": "36.09" }, { "name": "黑龙江省", "value": "26" }, { "name": "湖北省", "value": "24.51" }, { "name": "湖南省", "value": "27.81" }, { "name": "吉林省", "value": "16.55" }, { "name": "江苏省", "value": "48.41" }, { "name": "江西省", "value": "18.86" }, { "name": "辽宁省", "value": "41.38" }, { "name": "内蒙古自治区", "value": "12.16" }, { "name": "宁夏回族自治区", "value": "1.73" }, { "name": "青海省", "value": "1.63" }, { "name": "山东省", "value": "43.41" }, { "name": "山西省", "value": "16" }, { "name": "陕西省", "value": "12.85" }, { "name": "上海市", "value": "36.66" }, { "name": "四川省", "value": "31.69" }, { "name": "天津市", "value": "12.8" }, { "name": "新疆维吾尔自治区", "value": "7.91" }, { "name": "云南省", "value": "11.78" }, { "name": "浙江省", "value": "24.53" }],
+      gatewayno: '',
+      config: {
+        showValue: true,
+        unit: "亿",
+        data: []
+      },
+
     };
   },
 
   beforeMount() {
-    this.init(this.lists[0],this.lists[1],this.lists[2],this.lists[3])
+    this.config = {
+              ...this.config,
+              data: this.mysort(this.lists)
+            }
   },
 
   mounted() {
@@ -44,22 +47,28 @@ export default {
       this.pageflag = true
       this.$http.get('/left_bottom')
         .then((response) => {
-          if (this.lists[1][2] == response.data.list[1][2]) {
+          if (this.lists[0].value == response.data[0].value) {
             console.log
           }
           else {
-            this.lists = response.data.list
-            this.init(this.lists[0],this.lists[1],this.lists[2],this.lists[3])
+            this.lists = response.data
+            this.config = {
+              ...this.config,
+              data: this.mysort(this.lists)
+            }
           }
           this.switper()
         })
         .catch((error) => {
           console.log(error);
-          this.init
+          this.config = {
+            ...this.config,
+            data: this.mysort(this.lists)
+          }
         });
     },
 
-
+  
     clearData() {
       if (this.timer) {
         clearInterval(this.timer)
@@ -77,159 +86,26 @@ export default {
       this.timer = setInterval(looper, 1000);//this.$store.state.setting.echartsAutoTime
     },
 
-    init(data,data1,data2,data3) {
-      this.option = {
-        legend: {
-          data: [
-            {
-              name: "第一产业",
-              textStyle: {
-                color: "rgba(122, 122, 255, 1)", // 图例文字颜色
-              },
-            },
-            {
-              name: "第二产业",
-              textStyle: {
-                color: "rgba(207, 255, 243, 1)", // 图例文字颜色
-              },
-            },
-            {
-              name: "第三产业",
-              textStyle: {
-                color: "rgba(210, 100, 110, 1)", // 图例文字颜色
-              },
-            },
+    mysort(list) {
+      let newNum = [], numObj = {}
+      list.map(item => {
+        if (!numObj[item.name] && newNum.length < 32) {
+          numObj[item.name] = true
+          newNum.push(item)
+        }
+      })
+      let arr = newNum.sort((a, b) => {
+        return b.value - a.value
+      })
+      // console.log(arr)
+      let brr = []
+      for (let i = 0; i < 8; i++) {
+        brr.push(arr[i])
+        // console.log(1111,arr[i])
+      }
+      // console.log(brr)
 
-          ],
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            // Use axis to trigger tooltip
-            type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-          },
-
-          backgroundColor: "rgba(0,0,0,.6)",
-          borderColor: "rgba(147, 235, 248, .8)",
-          textStyle: {
-            color: "#FFF",
-            fontSize: 15,
-          },
-          formatter: function (params) {
-            var str =
-              '<div style="color: white"><p>省份：' +
-              params[0].name.split("[")[0] +
-              "<p><div>";
-            for (var i = 0; i < params.length; i++) {
-              str +=
-                params[i].marker +
-                " " +
-                params[i].seriesName +
-                " ：" +
-                params[i].value +
-                "亿<br>";
-            }
-            return str;
-          },
-
-        },
-        grid: {
-          //布局
-          show: true,
-          trigger: 'item',
-          left: "20px",
-          right: "20px",
-          bottom: "15px",
-          top: "22px",
-          containLabel: true,
-          borderColor: "#1F63A3",
-        },
-        textStyle:{
-          color:'white'
-        },
-        xAxis: {
-          type: 'value',
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: "rgba(31,99,163,.2)",
-            },
-          },
-          axisLine: {
-            // show:false,
-            lineStyle: {
-              color: "rgba(31,99,163,.1)",
-            },
-          },
-          axisLabel: {
-            color: "#7EB7FD",
-            fontWeight: "500",
-            formatter: "{value}亿",
-          }
-        },
-        yAxis: {
-          type: 'category',
-          axisLine: {
-            lineStyle: {
-              color: "rgba(31,99,163,.1)",
-            },
-          },
-          axisLabel: {
-            color: "#7EB7FD",
-            fontWeight: "500",
-            formatter: "{value}",
-          },
-          data: data
-        },
-        series: [
-          {
-            name: '第一产业',
-            type: 'bar',
-            stack: 'total',
-            label: {
-              show: true,
-              color:'white'
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            color: 'rgba(122, 122, 255, 1)',
-            data: data1
-          },
-          {
-            name: '第二产业',
-            type: 'bar',
-            stack: 'total',
-            label: {
-              show: true,
-              color:'black'
-
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            color: 'rgba(207, 255, 243, 1)',
-          
-            data: data2
-          },
-          {
-            name: '第三产业',
-            type: 'bar',
-            stack: 'total',
-            label: {
-              show: true,
-              color:'white'
-
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            color: 'rgba(210, 100, 110, 1)',
-            data: data3
-          },
-
-        ]
-      };
+      return brr
     }
 
 
@@ -237,11 +113,49 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
+.list_Wrap {
+  height: 100%;
+  overflow: hidden;
+
+  :deep(.kong) {
+    width: auto;
+  }
+}
+
+.sbtxSwiperclass {
+  .img_wrap {
+    overflow-x: auto;
+  }
+
+}
+
 .right_bottom {
   box-sizing: border-box;
-  padding: 0px;
-  margin: 0px;
+  padding: 0 16px;
 
+  .searchform {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .searchform_item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      label {
+        margin-right: 10px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      button {
+        margin-left: 30px;
+      }
+
+      input {}
+    }
+  }
 
   .img_wrap {
     display: flex;
